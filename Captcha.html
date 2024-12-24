@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CAPTCHA con immagini</title>
+  <style>
+    /* Stile per la griglia delle immagini */
+    .captcha-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 100px); /* 3 colonne */
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .captcha-grid img {
+      width: 100px;
+      height: 100px;
+      cursor: pointer;
+      border: 2px solid transparent; /* Bordo iniziale */
+      border-radius: 5px;
+      transition: border-color 0.3s;
+    }
+
+    .captcha-grid img.selected {
+      border: 2px solid blue; /* Bordo quando selezionata */
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #result {
+      font-weight: bold;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>CAPTCHA con immagini</h1>
+  <p>Seleziona tutte le immagini con **Colosseo** e poi premi il pulsante per verificare.</p>
+
+  <!-- Griglia di immagini -->
+  <div class="captcha-grid">
+    <!-- Usa il data-answer per identificare le immagini corrette -->
+    <img src="img/colosseo1.jpg" alt="Colosseo" data-answer="true">
+    <img src="img/colosseo2.jpg" alt="Colosseo" data-answer="true">
+    <img src="img/colosseo3.jpg" alt="Colosseo" data-answer="true">
+    <img src="img/monti.jpg" alt="Monti" data-answer="false">
+    <img src="img/trevi.jpg" alt="Trevi" data-answer="false">
+    <img src="img/pantheon.jpg" alt="Pantheon" data-answer="false">
+  </div>
+
+  <!-- Pulsante per verificare la selezione -->
+  <button onclick="checkCaptcha()">Verifica</button>
+
+  <!-- Messaggio di risultato -->
+  <p id="result"></p>
+
+  <!-- Script JavaScript -->
+  <script>
+    // Seleziona tutte le immagini nella griglia
+    const images = document.querySelectorAll('.captcha-grid img');
+
+    // Aggiungi un evento "click" per ogni immagine
+    images.forEach(img => {
+      img.addEventListener('click', () => {
+        // Al click, aggiungi o rimuovi la classe "selected"
+        img.classList.toggle('selected');
+      });
+    });
+
+    // Funzione per verificare la risposta
+    function checkCaptcha() {
+      let correct = true; // Variabile per il risultato del CAPTCHA
+
+      // Controlla ogni immagine
+      images.forEach(img => {
+        const isSelected = img.classList.contains('selected'); // È selezionata?
+        const isCorrect = img.dataset.answer === "true"; // È corretta?
+
+        // Selezione errata: immagine sbagliata selezionata o immagine corretta non selezionata
+        if (isSelected !== isCorrect) {
+          correct = false;
+        }
+      });
+
+      // Mostra il risultato all'utente
+      const resultElement = document.getElementById('result');
+      if (correct) {
+        resultElement.textContent = "CAPTCHA superato! 🎉";
+        resultElement.style.color = "green";
+      } else {
+        resultElement.textContent = "CAPTCHA fallito. Riprova! ❌";
+        resultElement.style.color = "red";
+      }
+    }
+  </script>
+</body>
+</html>
